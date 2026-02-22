@@ -1,0 +1,16 @@
+Package: dickless
+Title: Official R Client for the dickless.io API Platform
+Version: 0.1.0
+Authors@R: person("Aetherio LLC", email = "hello@dickless.ai", role = c("aut", "cre"))
+Description: R client for the dickless.io unified API platform providing content
+    moderation, PII redaction, AI gateway (OpenAI, Anthropic, Google), prompt
+    sanitization, URL shortening, and roast generation through a single API key.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports:
+    httr2 (>= 1.0.0),
+    jsonlite (>= 1.8.0)
+URL: https://github.com/aetherio-llc/dickless-r
+BugReports: https://github.com/aetherio-llc/dickless-r/issues
