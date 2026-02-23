@@ -6,18 +6,13 @@ One API key for content moderation, PII redaction, AI gateway (OpenAI, Anthropic
 
 ## Installation
 
-From GitHub (recommended during development):
+From GitHub:
 
 ```r
 # install.packages("devtools")
 devtools::install_github("aetherio-llc/dickless-r")
 ```
 
-From CRAN (when available):
-
-```r
-install.packages("dickless")
-```
 
 ## Quick Start
 
