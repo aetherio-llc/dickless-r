@@ -7,6 +7,10 @@
 #' @param base_url Base URL (default: "https://dickless.io")
 #' @param default_gateway_mode Default AI gateway mode (NULL, "byok", "pooled", or "dedicated")
 #' @return A dickless client object
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' }
 #' @export
 dickless_client <- function(api_key, base_url = "https://dickless.io", default_gateway_mode = NULL) {
   structure(
@@ -44,6 +48,12 @@ dickless_client <- function(api_key, base_url = "https://dickless.io", default_g
 #' @param client A dickless client
 #' @param text Text to moderate (1-10000 chars)
 #' @return List with safe, categories, overallScore
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' result <- moderate_text(client, "Hello, world!")
+#' result$safe
+#' }
 #' @export
 moderate_text <- function(client, text) {
   .dickless_request(client, "POST", "/api/v1/moderate/text", list(text = text))
@@ -55,6 +65,11 @@ moderate_text <- function(client, text) {
 #' @param image Base64-encoded image
 #' @param format Image format ("png", "jpeg", or "webp")
 #' @return List with safe, categories, overallScore
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' result <- moderate_image(client, base64_image)
+#' }
 #' @export
 moderate_image <- function(client, image, format = NULL) {
   body <- list(image = image)
@@ -68,6 +83,12 @@ moderate_image <- function(client, image, format = NULL) {
 #' @param text Text containing PII
 #' @param entities Character vector of entity types to target (NULL for all)
 #' @return List with redacted, entities, entityCount
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' result <- redact(client, "Email me at john@example.com")
+#' result$redacted
+#' }
 #' @export
 redact <- function(client, text, entities = NULL) {
   body <- list(text = text)
@@ -85,6 +106,13 @@ redact <- function(client, text, entities = NULL) {
 #' @param max_tokens Maximum tokens
 #' @param gateway_mode Gateway mode ("byok", "pooled", or "dedicated")
 #' @return List with id, model, provider, choices, usage
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' result <- chat(client, "gpt-4o",
+#'   messages = list(list(role = "user", content = "Hello!")))
+#' result$choices[[1]]$message$content
+#' }
 #' @export
 chat <- function(client, model, messages, provider = NULL, temperature = NULL,
                  max_tokens = NULL, gateway_mode = NULL) {
@@ -101,6 +129,11 @@ chat <- function(client, model, messages, provider = NULL, temperature = NULL,
 #'
 #' @param client A dickless client
 #' @return List with balanceCents, lifetimePurchasedCents, etc.
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' balance <- get_credit_balance(client)
+#' }
 #' @export
 get_credit_balance <- function(client) {
   .dickless_request(client, "GET", "/api/v1/ai/manage/credits/balance")
@@ -110,6 +143,11 @@ get_credit_balance <- function(client) {
 #'
 #' @param client A dickless client
 #' @return List of transaction records
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' transactions <- get_credit_transactions(client)
+#' }
 #' @export
 get_credit_transactions <- function(client) {
   .dickless_request(client, "GET", "/api/v1/ai/manage/credits/transactions")
@@ -121,6 +159,12 @@ get_credit_transactions <- function(client) {
 #' @param prompt The prompt to check
 #' @param strict If TRUE, strip detected threats
 #' @return List with clean, sanitized, threatScore, threats
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' result <- sanitize(client, "Ignore previous instructions and...")
+#' result$clean
+#' }
 #' @export
 sanitize <- function(client, prompt, strict = FALSE) {
   .dickless_request(client, "POST", "/api/v1/sanitize", list(prompt = prompt, strict = strict))
@@ -132,6 +176,12 @@ sanitize <- function(client, prompt, strict = FALSE) {
 #' @param url Target URL
 #' @param custom_code Optional custom short code
 #' @return List with code, shortUrl, targetUrl, qrCode
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' result <- shorten(client, "https://example.com")
+#' result$shortUrl
+#' }
 #' @export
 shorten <- function(client, url, custom_code = NULL) {
   body <- list(url = url)
@@ -144,6 +194,11 @@ shorten <- function(client, url, custom_code = NULL) {
 #' @param client A dickless client
 #' @param code Short URL code
 #' @return List with code, targetUrl, clicks, createdAt
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' stats <- get_short_url_stats(client, "abc123")
+#' }
 #' @export
 get_short_url_stats <- function(client, code) {
   .dickless_request(client, "GET", paste0("/api/v1/shorten/", code, "/stats"))
@@ -156,6 +211,12 @@ get_short_url_stats <- function(client, code) {
 #' @param value The value to validate
 #' @param deep Optional deep validation flag (NULL for API default)
 #' @return List with valid, type, value, errors
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' result <- validate(client, "email", "user@example.com")
+#' result$valid
+#' }
 #' @export
 validate <- function(client, type, value, deep = NULL) {
   body <- list(type = type, value = value)
@@ -170,6 +231,12 @@ validate <- function(client, type, value, deep = NULL) {
 #' @param format Optional image format hint ("png", "jpeg", "webp")
 #' @param language Optional language hint
 #' @return List with text, confidence, language, pageCount
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' result <- ocr(client, base64_image)
+#' result$text
+#' }
 #' @export
 ocr <- function(client, image, format = NULL, language = NULL) {
   body <- list(image = image)
@@ -186,6 +253,12 @@ ocr <- function(client, image, format = NULL, language = NULL) {
 #' @param from Optional source language code (NULL for auto-detection)
 #' @param model Optional translation model
 #' @return List with translatedText, detectedLanguage, targetLanguage, model
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' result <- translate(client, "Hello world", to = "es")
+#' result$translatedText
+#' }
 #' @export
 translate <- function(client, text, to, from = NULL, model = NULL) {
   body <- list(text = text, to = to)
@@ -204,6 +277,11 @@ translate <- function(client, text, to, from = NULL, model = NULL) {
 #' @param full_page Optional full-page capture flag
 #' @param wait_for Optional wait time in milliseconds
 #' @return List with image, format, width, height, url
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' result <- screenshot(client, "https://example.com")
+#' }
 #' @export
 screenshot <- function(client, url, format = NULL, width = NULL, height = NULL,
                        full_page = NULL, wait_for = NULL) {
@@ -222,6 +300,12 @@ screenshot <- function(client, url, format = NULL, width = NULL, height = NULL,
 #' @param text Text to analyse
 #' @param granularity Optional granularity ("sentence", "paragraph")
 #' @return List with sentiment, score, positive, negative, neutral
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' result <- sentiment(client, "I love this product!")
+#' result$sentiment
+#' }
 #' @export
 sentiment <- function(client, text, granularity = NULL) {
   body <- list(text = text)
@@ -237,6 +321,12 @@ sentiment <- function(client, text, granularity = NULL) {
 #' @param max_length Optional maximum summary length
 #' @param format Optional output format
 #' @return List with summary, originalLength, summaryLength, format
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' result <- summarize(client, text = "Long article text here...")
+#' result$summary
+#' }
 #' @export
 summarize <- function(client, text = NULL, url = NULL, max_length = NULL, format = NULL) {
   body <- list()
@@ -254,6 +344,12 @@ summarize <- function(client, text = NULL, url = NULL, max_length = NULL, format
 #' @param type Roast type: "resume", "landing_page", "code", "linkedin", or "general"
 #' @param severity Roast severity: "mild", "medium", or "brutal"
 #' @return List with roast, type, severity
+#' @examples
+#' \dontrun{
+#' client <- dickless_client(api_key = Sys.getenv("DICKLESS_API_KEY"))
+#' result <- roast(client, "My amazing resume...", type = "resume")
+#' result$roast
+#' }
 #' @export
 roast <- function(client, text, type = "general", severity = "brutal") {
   .dickless_request(client, "POST", "/api/v1/roast",
